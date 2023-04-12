@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Share | Pirchner.me</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.box {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
+  width: 600px;
+  height: 260px;
+  background-color: #ffffff;
+  padding: 10px 30px 40px;
+}
+
+.card h3 {
+  font-size: 22px;
+  font-weight: 600;
+  
+}
+
+.drop_box {
+  margin: 10px 0;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 3px dotted #a3a3a3;
+  border-radius: 5px;
+}
+
+.drop_box h4 {
+  font-size: 16px;
+  font-weight: 400;
+  color: #2e2e2e;
+}
+
+.drop_box p {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #a3a3a3;
+}
+
+.glow-on-hover {
+  text-decoration: none;
+  background-color: #005af0;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  transition: 0.3s;
+}
+
+.btn:hover{
+  text-decoration: none;
+  background-color: #ffffff;
+  color: #005af0;
+  padding: 10px 20px;
+  border: none;
+  outline: 1px solid #010101;
+}
+.form input {
+  margin: 10px 0;
+  width: 100%;
+  background-color: #e2e2e2;
+  border: none;
+  outline: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+}
+
+.glow-on-hover {
+    width: 220px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+}
+
+.glow-on-hover:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.glow-on-hover:active {
+    color: #000
+}
+
+.glow-on-hover:active:after {
+    background: transparent;
+}
+
+.glow-on-hover:hover:before {
+    opacity: 1;
+}
+
+.glow-on-hover:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #005AF0;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
+</style>
+</head>
+<body>
+<br>
+<br>
+<h1 align="center">share.pirchner.me</h1>
+<br>
+<h3 align="center">Upload files up to 1GB! Files are stored for 12h after upload.<br>After uploading a file you get a link to share wich lets you download the file.</h3>
+<br>
+<br>
+<div class="box">  
+    <div class="card">
+        <h3 id="title">Upload Files</h3>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="form">
+                <input type="file" hidden="hidden" name="file" id="file">
+                <div class="drop_box" id="dropBox">
+                    <header>
+                      <h4 id="fileName">Select File here</h4>
+                      <br>
+                    </header>
+                    <input type="email" hidden="hidden" placeholder="Enter email upload file" name="email" id="email">
+                    <button class="glow-on-hover" type="button" id="chooseFileButton" form="none">Choose File</button>
+                    <input type="submit" hidden="hidden" id="send">
+                </div>
+                <img src="https://cdn.dribbble.com/users/1731080/screenshots/6702268/circle_colors.gif" hidden="hidden" id="spinner">
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    const fileInput = document.getElementById("file");
+    const title = document.getElementById("title");
+    const fileName = document.getElementById("fileName");
+    const emailInput = document.getElementById("email");
+    const sendData = document.getElementById("send");
+    const chooseFileButton = document.getElementById("chooseFileButton");
+
+    const spinner = document.getElementById("spinner");
+
+
+    let mode = 0; // 0 = Choose File, 1 = Enter Email
+
+    chooseFileButton.onclick = () => {
+        if(mode === 0) {
+            fileInput.click();
+        } else if(mode === 1 && emailInput.value !== "") { // Upload
+
+            let file = fileInput.files[0];
+            let formData = new FormData();
+            spinner.hidden = false;
+
+            formData.append("file", file);
+            formData.append("email", emailInput.value);
+            fetch('/api/up', {method: "POST", body: formData}).then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    spinner.hidden = true;
+                    window.location = data.url;
+                } else {
+                    spinner.hidden = true;
+                    alert(data.reason);
+                }
+            });
+            //sendData.click();
+        }
+    };
+
+    fileInput.addEventListener("change", function (e) {
+        if(mode === 0) {
+            fileName.innerHTML = fileInput.files[0].name;
+            chooseFileButton.innerHTML = "Upload";
+            emailInput.hidden = false;
+            title.hidden = true;
+            mode = 1;
+        }
+    });
+
+</script>
+</body>
+</html>
