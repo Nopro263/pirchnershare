@@ -15,6 +15,7 @@ app.wsgi_app = ProxyFix(
 
 # Config Start
 BASE_URL = "https://share.pirchner.me"
+# BASE_URL = "http://localhost:5000"
 UPLOAD_DIR = "up"
 FILE_DELETE_TIME_IN_H = 12
 MAX_SIZE_IN_GB = 15
@@ -33,6 +34,15 @@ def is_code_used(code: int) -> bool:
     return os.path.exists(os.path.join(UPLOAD_DIR, str(code)))
 
 
+def getsize(path: str):
+    size = 0
+    for root, dirs, files in os.walk(path):
+        for f in files:
+            size += os.path.getsize(os.path.join(UPLOAD_DIR, f))
+
+    return size
+
+
 def can_upload(content: bytes, email: str, mimetype: str, name: str) -> str | None:
     size = 0
     size += len(name.encode("utf-8"))
@@ -44,10 +54,15 @@ def can_upload(content: bytes, email: str, mimetype: str, name: str) -> str | No
     size += len(content)
 
     if size > MAX_FILESIZE:
-        return "File too big"
+        return f"File too big ({size} > {MAX_FILESIZE})"
 
-    if os.path.getsize(UPLOAD_DIR) + size > MAX_SIZE:
-        return "Too many Files in Upload-Folder, try again later"
+    while getsize(UPLOAD_DIR) + size >= MAX_SIZE:
+        files = {os.path.getmtime(os.path.join(UPLOAD_DIR, f)): os.path.join(UPLOAD_DIR, f) for f in
+                 os.listdir(UPLOAD_DIR)}
+        if len(files) == 0:
+            break
+        to_delete = files[min(files.keys())]
+        os.remove(to_delete)
     return None
 
 
