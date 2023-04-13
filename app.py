@@ -14,10 +14,10 @@ app.wsgi_app = ProxyFix(
 )
 
 # Config Start
-BASE_URL = "http://localhost:5000"
+BASE_URL = "https://share.pirchner.me"
 UPLOAD_DIR = "up"
 FILE_DELETE_TIME_IN_H = 12
-MAX_SIZE_IN_GB = 10
+MAX_SIZE_IN_GB = 15
 MAX_FILESIZE_IN_GB = 1
 # Config End
 
@@ -116,7 +116,7 @@ def uploaded(_id):  # put application's code here
         return redirect(BASE_URL)
 
     if not is_code_used(int(_id)):
-        return render_template("error.html", error="File deleted")
+        return render_template("error.html", error="File not available")
 
     data = back_download(int(_id))
     name = data[0].decode("utf-8")

@@ -182,6 +182,7 @@
     const emailInput = document.getElementById("email");
     const sendData = document.getElementById("send");
     const chooseFileButton = document.getElementById("chooseFileButton");
+    const dropArea = document.getElementById('dropBox');
 
     const spinner = document.getElementById("spinner");
 
@@ -212,7 +213,6 @@
             //sendData.click();
         }
     };
-
     fileInput.addEventListener("change", function (e) {
         if(mode === 0) {
             fileName.innerHTML = fileInput.files[0].name;
@@ -222,6 +222,32 @@
             mode = 1;
         }
     });
+
+    ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false)
+    });
+
+  function preventDefaults (e) {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+    function handleDrop(e) {
+
+        e.preventDefault()
+        e.stopPropagation()
+
+         fileInput.files = e.dataTransfer.files;
+         if(mode === 0) {
+             fileName.innerHTML = fileInput.files[0].name;
+             chooseFileButton.innerHTML = "Upload";
+             emailInput.hidden = false;
+             title.hidden = true;
+             mode = 1;
+         }
+    }
+
+  dropArea.addEventListener('drop', handleDrop, false);
 
 </script>
 </body>

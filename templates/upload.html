@@ -81,13 +81,16 @@
     <br>
     <h1>{{ email }} shared a File with you</h1>
     <h3>Name: {{ name }}</h3>
-    <h3>Uploaded at {{ time }} on {{ date }}</h3>
+    <h3>Uploaded at {{ time }} on {{ date }} (european)</h3>
     <h3>Size: {{ size }}</h3>
     <br>
     <button class="glow-on-hover" type="button" onclick="window.location = '{{ link }}'">Download it here</button>
     <br>
     <br>
     <button class="glow-on-hover" type="button" onclick="copy('{{ clink }}')">or copy the link</button>
+    <br>
+    <br>
+    <button class="glow-on-hover" type="button" onclick="window.location = 'https://share.pirchner.me'">Upload a file yourself</button>
 </div>
     <script>
         function copy(link) {
