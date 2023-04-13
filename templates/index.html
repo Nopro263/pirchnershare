@@ -158,7 +158,7 @@
 <div class="box">  
     <div class="card">
         <h3 id="title">Upload Files</h3>
-        <form action="/" method="post" enctype="multipart/form-data">
+        <form action="/api/up" method="post" enctype="multipart/form-data">
             <div class="form">
                 <input type="file" hidden="hidden" name="file" id="file">
                 <div class="drop_box" id="dropBox">
@@ -166,11 +166,10 @@
                       <h4 id="fileName">Select File here</h4>
                       <br>
                     </header>
-                    <input type="email" hidden="hidden" placeholder="Enter email upload file" name="email" id="email">
+                    <input type="email" hidden="hidden" placeholder="Enter email upload file" name="email" id="email" form="none">
                     <button class="glow-on-hover" type="button" id="chooseFileButton" form="none">Choose File</button>
-                    <input type="submit" hidden="hidden" id="send">
                 </div>
-                <img src="https://cdn.dribbble.com/users/1731080/screenshots/6702268/circle_colors.gif" hidden="hidden" id="spinner">
+                <img src="static/load.gif" hidden="hidden" id="spinner">
             </div>
         </form>
     </div>
@@ -180,7 +179,6 @@
     const title = document.getElementById("title");
     const fileName = document.getElementById("fileName");
     const emailInput = document.getElementById("email");
-    const sendData = document.getElementById("send");
     const chooseFileButton = document.getElementById("chooseFileButton");
     const dropArea = document.getElementById('dropBox');
 
@@ -210,7 +208,6 @@
                     alert(data.reason);
                 }
             });
-            //sendData.click();
         }
     };
     fileInput.addEventListener("change", function (e) {
